@@ -1,0 +1,88 @@
+.text
+_start:
+
+	#improvement over sln 1, but still pretty messy in the solution
+	# could be cleaned up a lot
+
+
+    # Loading N into r4:
+    movia   r4, N
+    ldw     r4, 0(r4)
+    movi    r2, 0
+	
+	movi r5, 3
+	movi r6, 5
+
+
+	movi r3, 0
+	#this will be the counters that we use to keep track
+	# of the multiplicity of the number we are on 
+	movi r7, 0
+	movi r8, 0 
+	
+	loop:
+	#increment main counter
+	addi r3, r3, 1
+	bgt r3, r4, done
+	
+	#increment the counter 
+	addi r7, r7, 1
+	addi r8, r8, 1
+	
+	beq r7, r5, other		# if factor of 3 check 5
+	beq r8, r6, increment
+	
+	other:
+	beq r8, r6, skip # if also factor 5 skip 
+	beq r7, r5, increment
+
+	br skip
+	
+	
+	increment:
+	add r2, r2, r3
+
+
+	skip:
+	
+	#if the counters are 3 or 5 resp. reset
+	beq r7, r5, reset3
+	beq r8, r6, reset5
+
+
+	br loop
+
+	
+	reset3:
+		movi r7, 0
+		beq r8, r6, reset5
+
+		br loop
+	
+	reset5: 
+		movi r8, 0
+		beq r7, r5, reset3
+		
+		br loop
+	
+	
+done: 
+	break
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+.data
+N:  .word 16
