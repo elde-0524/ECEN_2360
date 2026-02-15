@@ -1,0 +1,54 @@
+.text
+_start:
+    # Loading N into r4:
+    movia   r4, N
+    ldw     r4, 0(r4)
+    movi    r2, 0
+
+	#load 3 and 5 into a register
+	movi r5, 3
+	movi r6, 5
+
+	#deincrement this
+	mov r3, r4
+	
+	Loop: 
+	#break if we are done
+	beq r3, r0, done
+	
+	#check if we are a multiple of 3
+	div r7, r3, r5
+	mul r7, r7, r5
+	sub r7, r3, r7
+		
+	#check if its multple of 5
+	div r8, r3, r6
+	mul r8, r8, r6
+	sub r8, r3, r8
+	
+	beq r8, r0, other
+	beq r7, r0, increment
+	
+	
+	other:
+	beq r7, r0, skipandloop
+	beq r8, r0, increment
+	
+	br skipandloop
+	
+	increment:
+	#add the number to the sum
+	add r2, r2, r3
+	
+	skipandloop:
+	#deincrement
+	subi r3, r3, 1
+	br Loop
+	
+	
+	
+done: 
+break
+
+.data
+N:  .word 25
