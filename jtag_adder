@@ -1,15 +1,15 @@
 .global _start
 _start:
-	
-	.global _start
-_start:
 	####
 	# Example code to print the "Enter number:" prompt
 	movia	r2, 0xff201000		# JTAG UART MMIO base address
     movia   r15, STR_PROMPT		# address of "Enter number:" string
 	movia 	r18, STR_TOTAL		# address of "Total: " string
-	movia sp, 0x007FFFFC
-	movi r5, 0x0a
+	movia   sp, 0x007FFFFC
+	
+	mov r22, sp
+	movi    r5, 0x0a
+	movi r10, 10
 	
 	# total entered
 	mov r3, r0
@@ -45,9 +45,9 @@ wait_echo:
 	bne r5, r20, wait_num 		# if not enter, 
 	
 	
+	addi r20, r20, -48          # convert ASCII to digit
 	add r3, r3, r20
 	
-	mov r15, r0
 write_str_total:
 
     ldb     r9, 0(r18)			# r16 = read next character from STR_PROMPT
@@ -62,8 +62,7 @@ wait_total:
     stwio   r9, 0(r2)			# write character (r16)
     br		write_str_total     # repeat for the next character
 	
-
-movi r10, 10
+	
 
 divide_loop:
     beq r3, r0, print_loop
@@ -83,7 +82,7 @@ divide_loop:
 
 print_loop:
     # check if stack is empty (compare sp to original sp)
-    beq sp, r15, done        # r15 = saved original sp before loop
+    beq sp, r22, done        # r15 = saved original sp before loop
 
     ldw r4, 0(sp)            # pop digit
     addi sp, sp, 4
